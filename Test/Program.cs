@@ -16,8 +16,8 @@ namespace Test
             DateTime date = DateTime.Now;
 
             ApplicationConfiguration.Initialize();
-            GlobalState.output = new Output();
-            GlobalState.mian = new Home();
+            GlobalState.output = new Forms.Output();
+            GlobalState.mian = new Forms.Home();
             GlobalState.output.Show();
             Command.ConsoleLog("Æô¶¯ÓÚ: " + ToolKit.FixDateTime(date, 0));
             Application.Run(GlobalState.mian);

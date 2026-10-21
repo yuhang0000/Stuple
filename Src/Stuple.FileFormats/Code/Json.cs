@@ -1,4 +1,4 @@
-﻿
+﻿using Stuple.Varables;
 
 
 namespace Stuple.FileFormats
@@ -11,19 +11,37 @@ namespace Stuple.FileFormats
         /// <summary>
         /// Json 对象根
         /// </summary>
-        public List<Dictionary<string, object>> Root = new List<Dictionary<string, object>>();
+        public Dictionary<string, object> Root = new Dictionary<string, object>();
 
-        //列印成可读字串符
+        /// <summary>
+        /// 列印成可读字串符
+        /// </summary>
+        /// <returns>返回转化后的字串符</returns>
         public override string ToString()
         {
             return base.ToString();
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        public Json()
+        {
+
+        }
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="Text">Json 文本数据</param>
+        public Json(String Text)
+        {
+            this.Root = Read(Text);
+        }
 
         /// <summary>
         /// 自定 Null 类在 Dictionary<string, object> 中, 作为 object 的初始值
         /// </summary>
-        public class ValueNull
+        private class ValueNull
         {
             public ValueNull() { }
 
@@ -118,7 +136,7 @@ namespace Stuple.FileFormats
                     {
                         IsString(str);
                         //检查文本可转换的类型
-                        string type = Command.GetType4String(str);
+                        string type = Conversion.GetType4String(str);
                         switch (type)
                         {
                             case "string": //返回文本
@@ -254,7 +272,7 @@ namespace Stuple.FileFormats
                                 {
                                     byte[] bytes;
                                     string u = text.Substring(i + 1, 4);
-                                    if (Command.TryString2Bytes(u, out bytes) == true)
+                                    if (Conversion.TryString2Bytes(u, out bytes) == true)
                                     {
                                         int hex = (int)Command.Sum4Bytes(bytes);
                                         //对于代理位解析, 参看一下连接, 感谢!
@@ -265,7 +283,7 @@ namespace Stuple.FileFormats
                                             if(i + 10 < text.Length && text[i + 5] == '\\' && text[i + 6] == 'u')
                                             {
                                                 u = text.Substring(i + 7, 4);
-                                                if (Command.TryString2Bytes(u, out bytes) == true)
+                                                if (Conversion.TryString2Bytes(u, out bytes) == true)
                                                 {
                                                     int HSCP = hex;
                                                     int LSCP = (int)Command.Sum4Bytes(bytes);

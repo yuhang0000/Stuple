@@ -1,0 +1,10 @@
+帮助文档: 
+	exit
+
+	gc
+
+	print
+
+	about
+
+	help

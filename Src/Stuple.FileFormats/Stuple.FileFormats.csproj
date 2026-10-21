@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Stuple.Variables\Stuple.Variables.csproj" />
+  </ItemGroup>
+
 </Project>

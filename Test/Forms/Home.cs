@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Test
+namespace Test.Forms
 {
     public partial class Home : Form
     {
@@ -36,16 +36,12 @@ namespace Test
 
         private void BtnOutput_Click(object sender, EventArgs e)
         {
-            if(GlobalState.output == null)
-            {
-                GlobalState.output = new Output();
-                GlobalState.output.Show();
-            }
-            else
-            {
-                GlobalState.output.WindowState = FormWindowState.Normal;
-                GlobalState.output.Activate();
-            }
+            Command.ShowOrActivateForm<Forms.Output>(ref GlobalState.output);
+        }
+
+        private void BtnFileFormats_Click(object sender, EventArgs e)
+        {
+            Command.ShowOrActivateForm<Forms.Stuple_FileFormats>(ref GlobalState.Stuple_FileFormats);
         }
     }
 }

@@ -8,8 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Test.Properties;
 
-namespace Test
+namespace Test.Forms
 {
     public partial class Output : Form
     {
@@ -92,7 +93,9 @@ namespace Test
         /// 记录命令的换挡位置, 反正是给 ↑↓ 用的
         /// </summary>
         public int TextBoxCommShiftIndex = 0;
-        //命令行回车
+        /// <summary>
+        /// 命令行回车, 打命令行的地方
+        /// </summary>
         private void TextBoxComm_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Up) //箭头上 ↑
@@ -213,12 +216,7 @@ namespace Test
                             break;
                         //帮助
                         case "help":
-                            msgs =
-                            [
-                                "帮助文档: ",
-                                "(稍后写...)",
-                            ];
-                            Command.ConsoleLog(string.Join("\r\n", msgs));
+                            Command.ConsoleLog(Resources.TextBoxCommHelp);
                             break;
                         //啥也不是
                         default:

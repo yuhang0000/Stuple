@@ -1,10 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Compile Update="Home.cs">
+    <Compile Update="Forms\Home.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Output.cs">
+    <Compile Update="Forms\Output.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Stuple_FileFormats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Stuple_FileFormats_Json.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

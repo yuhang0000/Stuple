@@ -37,6 +37,25 @@ namespace Test
                 }
             }
         }
+
+        /// <summary>
+        /// 显示窗体, 若窗体不存在就创建
+        /// </summary>
+        /// <typeparam name="T">这个好像是泛型</typeparam>
+        /// <param name="Form">目标窗体</param>
+        public static void ShowOrActivateForm<T>(ref T? Form) where T : Form, new() //T 泛型, 就是个 "变量类型" 的占位符; where T : Form, T 是谁, 这里 T 是 Form; new(), 不知道, 但是如果要创建窗体的话, T() == new Form()
+        {
+            if(Form == null || Form.IsDisposed == true)
+            {
+                Form = new T();
+                Form.Show();
+            }
+            else
+            {
+                Form.WindowState = FormWindowState.Normal;
+                Form.Activate();
+            }
+        }
     }
 
     /// <summary>
@@ -47,11 +66,15 @@ namespace Test
         /// <summary>
         /// 主窗体
         /// </summary>
-        public static Home? mian;
+        public static Forms.Home? mian;
         /// <summary>
         /// 输出
         /// </summary>
-        public static Output? output;
+        public static Forms.Output? output;
+
+        public static Forms.Stuple_FileFormats? Stuple_FileFormats;
+
+        public static Forms.Stuple_FileFormats_Json? Stuple_FileFormats_Json;
     }
 
     /// <summary>
