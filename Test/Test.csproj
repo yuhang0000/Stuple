@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Src\Stuple.Commands\Stuple.Commands.csproj" />
+    <ProjectReference Include="..\Src\Stuple.FileFormats\Stuple.FileFormats.csproj" />
     <ProjectReference Include="..\Src\Stuple.Variables\Stuple.Variables.csproj" />
   </ItemGroup>
 

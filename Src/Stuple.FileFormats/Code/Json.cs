@@ -9,15 +9,15 @@ namespace Stuple.FileFormats
     public class Json
     {
         /// <summary>
-        /// Json 对象根
+        /// Json 对象
         /// </summary>
-        public Dictionary<string, object> Root = new Dictionary<string, object>();
+        public Dictionary<string, object> Data;
 
         /// <summary>
         /// 列印成可读字串符
         /// </summary>
         /// <returns>返回转化后的字串符</returns>
-        public override string ToString()
+        public override string? ToString()
         {
             return base.ToString();
         }
@@ -27,15 +27,27 @@ namespace Stuple.FileFormats
         /// </summary>
         public Json()
         {
-
+            this.Data = new Dictionary<string, object>();
         }
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="Text">Json 文本数据</param>
+        /// <param name="Text">需要解析的文本数据</param>
         public Json(String Text)
         {
-            this.Root = Read(Text);
+            this.Data = Parse(Text);
+        }
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="dict">已解析的键值对集合</param>
+        public Json(Dictionary<string, object> dict)
+        {
+            if(dict == null)
+            {
+                throw new ArgumentNullException("接受的参数不应为空值! ");
+            }
+            this.Data = dict;
         }
 
         /// <summary>
@@ -52,36 +64,140 @@ namespace Stuple.FileFormats
         }
 
         /// <summary>
-        /// 自定异常类
+        /// 表示在处理 Json 对象时出现的错误
         /// </summary>
         public class JsonException: Exception
         {
-            //直接继承
+            /// <summary>
+            /// 异常代码
+            /// </summary>
+            public JsonExceptionCode ExceptionCode = JsonExceptionCode.Unknown;
+
+            /// <summary>
+            /// 抛出异常
+            /// </summary>
             public JsonException(): base() { }
+            /// <summary>
+            /// 抛出异常
+            /// </summary>
+            /// <param name="msg">错误原因, 自己写</param>
             public JsonException(string msg): base(msg) { }
+            /// <summary>
+            /// 抛出异常
+            /// </summary>
+            /// <param name="msg">异常的原因, 要自己写</param>
+            /// <param name="code">异常代码</param>
+            public JsonException(string msg, JsonExceptionCode code): base(msg) 
+            {
+                this.ExceptionCode = code;
+            }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Json 抛出异常时的具体代码. <br/><br/>
+        /// 正常为 0, 未知为 -1, 其余值为异常. 
+        /// </para>
+        /// </summary>
+        public enum JsonExceptionCode
+        {
+            /// <summary>
+            /// 未知
+            /// </summary>
+            Unknown = -1,
+            /// <summary>
+            /// 正常
+            /// </summary>
+            Normal = 0,
+
+            /// <summary>
+            /// 语法错误
+            /// </summary>
+            ErrorSyntax = 1000,
+
+            /// <summary>
+            /// 空的 Json 对象
+            /// </summary>
+            EmptyObject = 1100,
+            /// <summary>
+            /// 空键名
+            /// </summary>
+            EmptyKeyName = 1101,
+            /// <summary>
+            /// 空数值
+            /// </summary>
+            EmptyValue = 1102,
+
+            /// <summary>
+            /// 无效的 Json 对象
+            /// </summary>
+            InvalidObject = 1200,
+            /// <summary>
+            /// 无效键名
+            /// </summary>
+            InvalidKeyName = 1201,
+            /// <summary>
+            /// 无效数值
+            /// </summary>
+            InvalidValue = 1202,
+            /// <summary>
+            /// 无效数值类型
+            /// </summary>
+            InvalidValueType = 1203,
+            /// <summary>
+            /// 无效字串符
+            /// </summary>
+            InvalidString = 1204,
+
+            /// <summary>
+            /// 未知键名
+            /// </summary>
+            UnknownKeyName = 1300,
+            /// <summary>
+            /// 未知数值
+            /// </summary>
+            UnknownValue = 1301,
+            /// <summary>
+            /// 未知数值类型
+            /// </summary>
+            UnknownValueType = 1302,
+            /// <summary>
+            /// 未知父级节点
+            /// </summary>
+            UnknownParentNode = 1303,
         }
 
         /// <summary>
         /// 解析 Json 文本
         /// </summary>
-        /// <param name="text">输入 Json 文本</param>
+        /// <param name="text">需要解析的目标文本</param>
         /// <param name="decode">是否还原转义字符</param>
-        /// <returns>object 字典(键值对)</returns>
-        public static Dictionary<string, object> Read(string text, bool decode = true)
+        /// <returns>Json: 返回 Json 对象</returns>
+        /// 
+        public static Json Read(string text, bool decode = true)
+        {
+            return new Json(Parse(text, decode));
+        }
+
+        /// <summary>
+        /// 解析 Json 的文本, 与 Read() 相比, 这个返回字典, 其他一样
+        /// </summary>
+        private static Dictionary<string, object> Parse(string text, bool decode = true)
         {
             //不接受空值
             if (text == null)
             {
-                throw new JsonException("[错误]: 这是空的 Json 对象! ");
+                //throw new JsonException("这是空的 Json 对象! ", JsonExceptionCode.EmptyObject);
+                throw new ArgumentNullException("接受的文本不应为空值! ");
             }
             text = text.Trim();
             if (text.Length < 1) 
             {
-                throw new JsonException("[错误]: 这是空的 Json 对象! ");
+                throw new ArgumentException("不接受空字符! ");
             }
             if (text[0] != '{' || text[text.Length - 1] != '}')
             {
-                throw new JsonException("[错误]: 这不是一个 Json 对象! ");
+                throw new JsonException("这不是一个有效的 Json 对象! ", JsonExceptionCode.ErrorSyntax);
             }
 
             //初始化返回本体
@@ -114,7 +230,7 @@ namespace Stuple.FileFormats
                 if (input.Length > 1 && ((input[0] == '"' && input[input.Length - 1] != '"') ||
                     (input[0] != '"' && input[input.Length - 1] == '"')))
                 {
-                    throw new JsonException("[错误]: Json 语法错误: 非法字符串: \r\n" + input);
+                    throw new JsonException("非法字符串: \r\n" + input, JsonExceptionCode.ErrorSyntax);
                 }
             }
 
@@ -123,7 +239,7 @@ namespace Stuple.FileFormats
             {
                 if (input == null) //若传递的是 null 的话, 也得是 "null", 不可能直接是 null
                 {
-                    throw new JsonException("[错误]: Json 语法错误: 不可传递空值! ");
+                    throw new JsonException("不可传递空值! ", JsonExceptionCode.EmptyValue);
                 }
                 else if (input is string) //文本
                 {
@@ -156,7 +272,7 @@ namespace Stuple.FileFormats
                             case "double": //双精度浮点数
                                 return double.Parse(str);
                             default: //不知道是什么类型
-                                throw new JsonException("[错误]: Json 语法错误: 未知类型的值: \r\n" + str);
+                                throw new JsonException("语法错误: 未知类型的值: \r\n" + str, JsonExceptionCode.UnknownValueType);
                         }
                     }
                 }
@@ -171,7 +287,7 @@ namespace Stuple.FileFormats
                 else
                 {
                     //一般情况不会运行到这里来
-                    throw new JsonException("[错误]: Json 语法错误: 未知类型的值: \r\n" + input.ToString());
+                    throw new JsonException("未知类型的值: \r\n" + input.ToString(), JsonExceptionCode.UnknownValueType);
                 }
             }
 
@@ -185,14 +301,14 @@ namespace Stuple.FileFormats
                         //查找父级存不存在
                         if (tmp_obj.Count < 1)
                         {
-                            throw new JsonException("[错误]: Json 语法错误: 父级对象不存在. ");
+                            throw new JsonException("父级对象不存在. ", JsonExceptionCode.UnknownParentNode);
                         }
                         else
                         {
                             var tmp_obj_keys = tmp_obj[tmp_obj.Count - 1].Keys;
                             if (tmp_obj_keys.Count == 0) // 这种情景: {{"name": "hanhan"}} //插入对象时, 没有提供键名
                             {
-                                throw new JsonException("[错误]: Json 语法错误: 父级是空对象, 未提供键名. ");
+                                throw new JsonException("父级是空对象, 未提供键名. ", JsonExceptionCode.UnknownParentNode);
                             }
                             var tmp_obj_key = tmp_obj_keys.Last();
                             tmp_obj[tmp_obj.Count - 1][tmp_obj_key] = input;
@@ -203,7 +319,7 @@ namespace Stuple.FileFormats
                         var tmp_obj_keys = tmp_obj[tmp_obj.Count - 1].Keys;
                         if (tmp_obj_keys.Count == 0) // 这种情景: {{"name": "hanhan"}} //插入对象时, 没有提供键名
                         {
-                            throw new JsonException("[错误]: Json 语法错误: 父级是空对象, 未提供键名. ");
+                            throw new JsonException("父级是空对象, 未提供键名. ", JsonExceptionCode.UnknownParentNode);
                         }
                         var tmp_obj_key = tmp_obj_keys.Last();
                         tmp_obj[tmp_obj.Count - 1][tmp_obj_key] = CheckType(input);
@@ -364,7 +480,7 @@ namespace Stuple.FileFormats
                             //一般来讲, tmp_obj.Count == 0 只有一个原因: 已经把 tmp_obj[0] 赋值给 output 了, 原本 tmp_obj 会清空.
                             if (tmp_obj.Count == 0) 
                             {
-                                throw new JsonException("[错误]: Json 语法错误: 存在多余截止符: }");
+                                throw new JsonException("存在多余截止符: }", JsonExceptionCode.ErrorSyntax);
                             }
 
                             //检查是否还有键值对仍处于初始状态
@@ -420,13 +536,13 @@ namespace Stuple.FileFormats
                             //写入键名
                             if (tmp_str == null)
                             {
-                                throw new JsonException("[错误]: Json 语法错误: 未知键名. ");
+                                throw new JsonException("未知键名. ", JsonExceptionCode.ErrorSyntax);
                             }
                             IsString(tmp_str);
                             //检查是否为非法键名 (两边必须为 "" )
                             if (tmp_str.Length < 2 || (tmp_str.Length > 1 && tmp_str[0] != '"' && tmp_str[tmp_str.Length - 1] != '"'))
                             {
-                                throw new JsonException("[错误]: Json 语法错误: 非法键名: \r\n" + tmp_str);
+                                throw new JsonException("非法键名: \r\n" + tmp_str, JsonExceptionCode.ErrorSyntax);
                             }
                             tmp_str = RemoveQuotes(tmp_str);
                             tmp_obj[tmp_obj.Count - 1].Add(tmp_str, ValueNull.Null);
@@ -436,7 +552,7 @@ namespace Stuple.FileFormats
                             //不能同时存在两个字串符
                             if (tmp_str != null)
                             {
-                                throw new JsonException("[错误]: Json 语法错误: 不能同时存在两个字串符. ");
+                                throw new JsonException("不能同时存在两个字串符. ", JsonExceptionCode.ErrorSyntax);
                             }
                             isstring = true;
                             tmp_str = c.ToString();
@@ -458,30 +574,30 @@ namespace Stuple.FileFormats
             //检查有没有多余对象
             if (tmp_obj.Count > 1)
             {
-                throw new JsonException("[错误]: 存在多余的 Json 对象! ");
+                throw new JsonException("Json 对象存在多余的根节点! ", JsonExceptionCode.ErrorSyntax);
             }
 
             //如果循环结束之后, isstring 还为 true 的话, 那说明字符串没有设置截止符
             if (isstring == true)
             {
-                throw new JsonException("[错误]: Json 语法错误: 字符串溢出: \r\n" + tmp_str);
+                throw new JsonException("字符串溢出: \r\n" + tmp_str, JsonExceptionCode.ErrorSyntax);
             }
 
             return output;
         }
 
         /// <summary>
-        /// 打印 Json 文本
+        /// 打印成可视化树状文本
         /// </summary>
         /// <param name="json">Json 对象</param>
         /// <returns>string: 打印信息</returns>
-        public static string Print(Dictionary<string, object> json)
+        public string PrintTree()
         {
             List<string> output = new List<string>();
             List<int> treeindex = new List<int>(); //记录每个条目在根内的深度
             int num1 = 0; //空格计数
             int num2 = 0; //条目计数
-            if (json.Count == 0)
+            if (this.Data.Count == 0)
             {
                 return "空的 Json 对象";
             }
@@ -595,7 +711,7 @@ namespace Stuple.FileFormats
                 num1--;
             }
             output.Add("Json 对象, 一共: ");
-            loop(json); //启动
+            loop(this.Data); //启动
             output[0] = "Json 对象, 一共: " + num2 + " 个条目";
 
             //格式化
@@ -680,17 +796,17 @@ namespace Stuple.FileFormats
         /// <param name="json">Json 对象</param>
         /// <param name="path">查找路径</param>
         /// <returns>object: 返回取值结果</returns>
-        public static object GetValue(Dictionary<string, object> json, object[] path)
+        public object GetValue(object[] path)
         {
-            if (json == null)
+            if (this.Data == null)
             {
-                throw new JsonException("[错误]: Json 取值错误: Json 对象不存在. ");
+                throw new JsonException("Json 对象不存在. ", JsonExceptionCode.EmptyObject);
             }
             if (path.Length < 1)
             {
-                throw new JsonException("[错误]: Json 取值错误: 输入路径不能为空. ");
+                throw new ArgumentException("输入路径不能为空. ");
             }
-            Dictionary<string, object> obj = json;
+            Dictionary<string, object> obj = this.Data;
             List<object> array = null;
 
             //循环遍历
@@ -702,12 +818,12 @@ namespace Stuple.FileFormats
                     string key = (string)keys;
                     if (obj == null) //对象找不到就报错
                     {
-                        throw new JsonException("[错误]: Json 取值错误: 找不到对象, 待查询的键名是: \"" + key + "\" 深度: " + i.ToString());
+                        throw new InvalidOperationException("找不到对象, 待查询的键名是: \"" + key + "\" 深度: " + i.ToString());
                     }
                     object value;
                     if (obj.TryGetValue(key, out value) == false) //值找不到就报错
                     {
-                        throw new JsonException("[错误]: Json 取值错误: 找不到该值, 其键名是: \"" + key + "\" 深度: " + i.ToString());
+                        throw new KeyNotFoundException("找不到该值, 其键名是: \"" + key + "\" 深度: " + i.ToString());
                     }
 
                     if (i == path.Length - 1) //检索到路径的最后一个 key, 就返回数据 (遍历到 path 的最后一个值)
@@ -728,7 +844,7 @@ namespace Stuple.FileFormats
                         }
                         else //既不是对象也不是队列, 那无法继续遍历下去了, 直接报错
                         {
-                            throw new JsonException("[错误]: Json 取值错误: 检索到非对象\\队列, 提前终止, 其键名是: \"" + key + 
+                            throw new InvalidOperationException("检索到非对象\\队列, 提前终止, 其键名是: \"" + key + 
                                 "\" 深度: " + i.ToString());
                         }
                     }
@@ -738,11 +854,11 @@ namespace Stuple.FileFormats
                     int index = (int)keys;
                     if (array == null) //队列找不到就报错
                     {
-                        throw new JsonException("[错误]: Json 取值错误: 找不到队列, 待查询的索引是: " + index.ToString() + " 深度: " + i.ToString());
+                        throw new InvalidOperationException("找不到队列, 待查询的索引是: " + index.ToString() + " 深度: " + i.ToString());
                     }
                     if (index > array.Count - 1) //超过索引就报错
                     {
-                        throw new JsonException("[错误]: Json 取值错误: 索引值超出范围, 其索引是: " + index.ToString() + " 深度: " + i.ToString());
+                        throw new ArgumentOutOfRangeException("索引值超出范围, 其索引是: " + index.ToString() + " 深度: " + i.ToString());
                     }
                     object value = array[index];
 
@@ -764,17 +880,17 @@ namespace Stuple.FileFormats
                         }
                         else //既不是对象也不是队列, 那无法继续遍历下去了, 直接报错
                         {
-                            throw new JsonException("[错误]: Json 取值错误: 检索到非对象\\队列, 提前终止, 其索引是: " + index.ToString() +
+                            throw new InvalidOperationException("检索到非对象\\队列, 提前终止, 其索引是: " + index.ToString() +
                                 " 深度: " + i.ToString());
                         }
                     }
                 }
                 else //输入的不是键名或索引就报错
                 {
-                    throw new JsonException("[错误]: Json 取值错误: 输入路径有误, 非键名\\索引, 深度: " + i.ToString());
+                    throw new ArgumentException("输入路径有误, 非键名\\索引, 深度: " + i.ToString());
                 }
             }
-            throw new JsonException("[错误]: Json 取值错误: 未知错误. ");
+            throw new JsonException("未知错误. ", JsonExceptionCode.Unknown);
         }
 
         /// <summary>

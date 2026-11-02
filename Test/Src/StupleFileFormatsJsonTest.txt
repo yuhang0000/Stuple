@@ -1,0 +1,61 @@
+{
+  "valid_escape": "tab:\there\nnewline:\\backslash\/slash\"",
+  "unicode_basic": "\u0048\u0065\u006c\u006c\u006f",
+  "unicode_surrogate_pair": "\uD83D\uDE00",
+  "unicode_lone_high_surrogate": "\uD83D",
+  "unicode_lone_low_surrogate": "\uDE00",
+  "unicode_invalid_hex": "\uZZZZ",
+  "unicode_incomplete": "\u004",
+  "illegal_escape_char": "\a\b\c",
+  "escape_at_end_of_string": "dangling\\"
+}
+#####
+{
+  "fake_object": "{\"key\": \"value\"}",
+  "fake_array_with_braces": "[1, 2, {\"nested\": true}]",
+  "unescaped_quote_in_disguise": "this is not a quote: \", but this is: \"",
+  "key_looking_like_value": "{ \"inner\": \"{\" }",
+  "comment_trap": "// this is not a comment {\"a\":1}",
+  "multiline_string_trap": "line1\nline2\n{\"not\":\"parsed\"}"
+}
+#####
+{
+  "leading_zero": 0123,
+  "naked_decimal": .5,
+  "trailing_decimal": 5.,
+  "double_dot": 1..5,
+  "positive_sign": +42,
+  "infinity_literal": Infinity,
+  "nan_literal": NaN,
+  "negative_zero": -0,
+  "huge_integer": 99999999999999999999999999999999999999,
+  "tiny_float": 1e-400,
+  "overflow_float": 1e+400,
+  "hex_number": 0xFF,
+  "octal_number": 0o77
+}
+#####
+{
+  "duplicate_key_first": 1,
+  "duplicate_key_second": 2,
+  "empty_key": "",
+  "numeric_key_bare": {123: "value"},
+  "boolean_key_bare": {true: "value"},
+  "null_key_bare": {null: "value"},
+  "unquoted_key": {bare_key: "value"},
+  "single_quoted_key": {'single': "value"},
+  "key_with_control_char": "tab\tin\tkey"
+}
+#####
+{
+  "trailing_comma_object": {"a": 1, "b": 2,},
+  "trailing_comma_array": {"arr": [1, 2, 3,]},
+  "double_comma": {"a": 1,, "b": 2},
+  "missing_colon": {"a" 1},
+  "extra_colon": {"a": : 1},
+  "missing_value": {"a":},
+  "unclosed_string_key": {"unclosed: "value"},
+  "unclosed_object": {"a": 1,
+  "mismatched_brackets": {"arr": [1, 2, 3}},
+  "empty_input_inside": {}
+}

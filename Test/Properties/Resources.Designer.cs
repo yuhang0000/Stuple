@@ -61,7 +61,39 @@ namespace Test.Properties {
         }
         
         /// <summary>
-        ///   查找类似  的本地化字符串。
+        ///   查找类似 {
+        ///  &quot;valid_escape&quot;: &quot;tab:\there\nnewline:\\backslash\/slash\&quot;&quot;,
+        ///  &quot;unicode_basic&quot;: &quot;\u0048\u0065\u006c\u006c\u006f&quot;,
+        ///  &quot;unicode_surrogate_pair&quot;: &quot;\uD83D\uDE00&quot;,
+        ///  &quot;unicode_lone_high_surrogate&quot;: &quot;\uD83D&quot;,
+        ///  &quot;unicode_lone_low_surrogate&quot;: &quot;\uDE00&quot;,
+        ///  &quot;unicode_invalid_hex&quot;: &quot;\uZZZZ&quot;,
+        ///  &quot;unicode_incomplete&quot;: &quot;\u004&quot;,
+        ///  &quot;illegal_escape_char&quot;: &quot;\a\b\c&quot;,
+        ///  &quot;escape_at_end_of_string&quot;: &quot;dangling\\&quot;
+        ///}
+        ///#####
+        ///{
+        ///  &quot;fake_object&quot;: &quot;{\&quot;key\&quot;: \&quot;value\&quot;}&quot;,
+        ///  &quot;fake_array_with_braces&quot;: &quot;[1, 2, {\&quot;nested\&quot;: true}]&quot; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        public static string StupleFileFormatsJsonTestFile {
+            get {
+                return ResourceManager.GetString("StupleFileFormatsJsonTestFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 帮助文档: 
+        ///	exit
+        ///
+        ///	gc
+        ///
+        ///	print
+        ///
+        ///	about
+        ///
+        ///	help 的本地化字符串。
         /// </summary>
         public static string TextBoxCommHelp {
             get {
