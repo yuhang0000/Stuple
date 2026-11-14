@@ -43,5 +43,10 @@ namespace Test.Forms
         {
             Command.ShowOrActivateForm<Forms.Stuple_FileFormats>(ref GlobalState.Stuple_FileFormats);
         }
+
+        private void BtnCommands_Click(object sender, EventArgs e)
+        {
+            Command.ShowOrActivateForm<Forms.Stuple_Commands>(ref GlobalState.Stuple_Commands);
+        }
     }
 }

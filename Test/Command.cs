@@ -17,10 +17,23 @@ namespace Test
         /// </summary>
         /// <param name="msg">要打印的消息</param>
         /// <param name="level">消息等级</param>
-        public static void ConsoleLog(string msg, ConsoleLogLevel? level= null)
+        public static void ConsoleLog(object msg, ConsoleLogLevel? level= null)
         {
-            msg = ToolKit.FixDateTime() + "|" + msg;
-            Console.WriteLine(msg);
+            string text;
+            if(msg == null)
+            {
+                text = "";
+            }
+            else if(msg is string)
+            {
+                text = (msg as string)!;
+            }
+            else
+            {
+                text = (msg.ToString())!;
+            }
+            text = ToolKit.FixDateTime() + "|" + text;
+            Console.WriteLine(text);
             if(GlobalState.output != null)
             {
                 //调用方不在一个 UI 线程
@@ -28,12 +41,12 @@ namespace Test
                 {
                     GlobalState.output.TextBoxOutput.Invoke(new MethodInvoker( () =>
                     {
-                        GlobalState.output.Append(msg + "\r\n", level);
+                        GlobalState.output.Append(text + "\r\n", level);
                     }));
                 }
                 else
                 {
-                    GlobalState.output.Append(msg + "\r\n", level);
+                    GlobalState.output.Append(text + "\r\n", level);
                 }
             }
         }
@@ -73,8 +86,9 @@ namespace Test
         public static Forms.Output? output;
 
         public static Forms.Stuple_FileFormats? Stuple_FileFormats;
-
+        public static Forms.Stuple_Commands? Stuple_Commands;
         public static Forms.Stuple_FileFormats_Json? Stuple_FileFormats_Json;
+        public static Forms.Stuple_Commands_ToolKit? Stuple_Commands_ToolKit;
     }
 
     /// <summary>

@@ -41,17 +41,18 @@
             // BtnCommands
             // 
             BtnCommands.Location = new Point(15, 14);
-            BtnCommands.Margin = new Padding(4, 4, 4, 4);
+            BtnCommands.Margin = new Padding(4);
             BtnCommands.Name = "BtnCommands";
             BtnCommands.Size = new Size(210, 55);
             BtnCommands.TabIndex = 2;
             BtnCommands.Text = "Stuple.Commands";
             BtnCommands.UseVisualStyleBackColor = true;
+            BtnCommands.Click += BtnCommands_Click;
             // 
             // BtnVariables
             // 
             BtnVariables.Location = new Point(232, 14);
-            BtnVariables.Margin = new Padding(4, 4, 4, 4);
+            BtnVariables.Margin = new Padding(4);
             BtnVariables.Name = "BtnVariables";
             BtnVariables.Size = new Size(210, 55);
             BtnVariables.TabIndex = 3;
@@ -61,7 +62,7 @@
             // BtnFileFormats
             // 
             BtnFileFormats.Location = new Point(450, 14);
-            BtnFileFormats.Margin = new Padding(4, 4, 4, 4);
+            BtnFileFormats.Margin = new Padding(4);
             BtnFileFormats.Name = "BtnFileFormats";
             BtnFileFormats.Size = new Size(210, 55);
             BtnFileFormats.TabIndex = 4;
@@ -90,7 +91,7 @@
             // BtnOutput
             // 
             BtnOutput.Location = new Point(15, 470);
-            BtnOutput.Margin = new Padding(4, 4, 4, 4);
+            BtnOutput.Margin = new Padding(4);
             BtnOutput.Name = "BtnOutput";
             BtnOutput.Size = new Size(115, 35);
             BtnOutput.TabIndex = 1;
@@ -101,7 +102,7 @@
             // BtnExit
             // 
             BtnExit.Location = new Point(137, 470);
-            BtnExit.Margin = new Padding(4, 4, 4, 4);
+            BtnExit.Margin = new Padding(4);
             BtnExit.Name = "BtnExit";
             BtnExit.Size = new Size(115, 35);
             BtnExit.TabIndex = 0;
@@ -120,7 +121,7 @@
             Controls.Add(BtnFileFormats);
             Controls.Add(BtnVariables);
             Controls.Add(BtnCommands);
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             Name = "Home";
             Text = "测试";
             FormClosing += Home_FormClosing;
